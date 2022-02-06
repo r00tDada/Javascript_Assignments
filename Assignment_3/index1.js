@@ -50,9 +50,9 @@ function fillrandom(row, col) {
   while (set.size < row * col) {
     set.add(Math.floor(Math.random() * row * col) + 1);
   }
-  let it = set.values(),
+    let it = set.values(),
     val = null;
-  for (let i = 1; i <= row; i++) {
+    for (let i = 1; i <= row; i++) {
     var table_row = table.rows[i - 1];
     for (let j = 1; j <= col; j++) {
       var table_col = table_row.cells[j - 1];
@@ -64,10 +64,12 @@ function fillrandom(row, col) {
 }
 
 function createtable(row, col) {
+  table_array = new Array(row);
   for (let i = 0; i < row; i++) {
+    table_array[i] = new Array(col);
     var table_row = table.insertRow(i);
     for (let j = 0; j < col; j++) {
-      var table_col = table_row.insertCell(j);
+      table_row.insertCell(j);
     }
   }
 }
@@ -206,10 +208,7 @@ function submitform() {
   col = document.getElementById("col").value;
 
   if (row >= 1 && row <= 100 && col >= 1 && col <= 100) {
-    table_array = new Array(row);
-    for (let i = 0; i < row; i++) {
-      table_array[i] = new Array(col);
-    }
+   
     if (typeof table.rows[0] !== "undefined") {
       deletetable();
     }
