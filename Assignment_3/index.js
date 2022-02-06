@@ -86,7 +86,7 @@ function fillcellcolor(row, col) {
       var table_col = table_row.cells[j];
       if (table_col.innerHTML == row * col) {
         table_col.innerHTML = "";
-        table_col.classList.add("color_draggable", "draggable");
+        table_col.classList.add("color_draggable");
       }
     }
   }
@@ -151,16 +151,59 @@ function availabledrag(row, col) {
   }
 }
 
+var row,col;
+var cnt=0;
+function dragable() {
+  var val=-1;
+  console.log("****************");
+  console.log("In draggable");
+  availabledrag(row, col);
+  const draggables = document.querySelectorAll(".draggable:not(.color_draggable)");
+  const color_draggables = document.querySelector(".color_draggable");
+  console.log(draggables);
+  // console.log(color_draggables);
+  color_draggables.addEventListener("dragstart", (e) => {
+    e.target.classList.remove("color_draggable");
+    e.stopImmediatePropagation()
+  });
 
-function dragable(row, col) {
+  for (dg of draggables) {
+    dg.addEventListener("dragover", (e) => {
+      e.preventDefault();
+    });
+
+    dg.addEventListener("dragenter", () => {});
+
+    dg.addEventListener("dragleave", () => {});
+
+    dg.addEventListener("drop", (e) => {
+      console.log("in drop");
+      e.target.classList.add("color_draggable");
+      val = e.target.innerHTML;
+      console.log("dest1: ", val);
+      e.target.innerHTML = "";
+      e.stopImmediatePropagation()
+    });
+
+  }
+  color_draggables.addEventListener("dragend", (e) => {
+    console.log("Dragend");
+    e.target.removeAttribute("draggable");
+    e.target.innerHTML = val;
+    console.log("cnt: ",cnt);
+    cnt++;
+    e.stopImmediatePropagation()
+
+  });
+
 }
 
 function submitform() {
   var radio1 = document.getElementById("toggle_UD");
   var radio2 = document.getElementById("toggle_LR");
   var radio3 = document.getElementById("shuffle");
-  var row = document.getElementById("row").value;
-  var col = document.getElementById("col").value;
+  row = document.getElementById("row").value;
+  col = document.getElementById("col").value;
 
   if (row >= 1 && row <= 100 && col >= 1 && col <= 100) {
     table_array = new Array(row);
@@ -190,8 +233,7 @@ function submitform() {
     alert("Please enter the row or column within the range between 1 and 100 ");
     return;
   }
-    document.getElementById("dragbtn").disabled = false;
-
+  document.getElementById("dragbtn").disabled = false;
   document.getElementById("detail_form").reset();
 
 }
