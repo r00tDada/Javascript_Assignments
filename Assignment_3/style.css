@@ -1,7 +1,15 @@
-.color_draggable{
+.color_block {
     background-color: rgb(149, 226, 7);
 }
 
+
+.curr_block {
+    background-color: rgb(233, 157, 233);
+}
+
+.adjacentcell {
+    background-color: tomato;
+}
 
 
 th, td {
