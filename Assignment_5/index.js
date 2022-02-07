@@ -1,7 +1,7 @@
 var ROW,COL,table_arr;
 const table = document.getElementById("mytable");
 const btn_list = ["toggle_UD","toggle_LR","shuffle","clearbtn"];
-var click_flg = -1;
+var click_flg = -1,swap_idx;
 
 function checkingInput(maxRow,maxCol){
   if(ROW>=0 && ROW<=maxRow && COL>=0 && COL<=maxCol){
@@ -34,7 +34,6 @@ function hasblankblock(X,Y,val){
   }
   return false;
 }
-
 
 function isSafe(X,Y){
   if(X>=0 && X<ROW && Y>=0 && Y<COL){
@@ -78,6 +77,21 @@ function color_click_cell(adjacentcell,curr_colored_idx,curr_x,curr_y){
   table.rows[curr_x].cells[curr_y].classList.add("curr_select_cell");
 }
 
+function Isadjacentcell(row,col,swap_idx){
+  const dxy = [
+    [-1, 0],
+    [0, -1],
+    [1, 0],
+    [0, 1],
+  ];
+  for (dir of dxy) {
+    if (isSafe(row + dir[0], col + dir[1], ROW, COL) && (swap_idx[0]==row + dir[0]) && (swap_idx[1]==col+dir[1])) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function draggable(row,col){
   //  1. check whether the click is on colored or not.
   if(click_flg==-1){
@@ -88,10 +102,29 @@ function draggable(row,col){
     var curr_colored_idx = get_coordinate_by_value(ROW*COL);
     var adjacentcell = get_adjacent_cell(row,col);
     color_click_cell(adjacentcell,curr_colored_idx,row,col);
+    swap_idx=[row,col];
     click_flg=0;
   }
   else if(click_flg==0){
-    
+    if(!hasblankblock(row,col,ROW*COL)){
+      click_flg = -1;
+      alert("Selected box is not blank");
+      todo();
+      return;
+    }
+    if(Isadjacentcell(row,col,swap_idx)){
+      table_arr[row][col] =table_arr[swap_idx[0]][swap_idx[1]];
+      table_arr[swap_idx[0]][swap_idx[1]]= ROW*COL;
+      console.log(table_arr);
+      click_flg = -1;
+      todo();
+    }
+    else{
+      click_flg = -1;
+      alert("Selected box is not adjacent to color box");
+      todo();
+      return;
+    }
   }
 
 
