@@ -1,0 +1,20 @@
+.color_block {
+    background-color: rgb(149, 226, 7);
+}
+
+
+.curr_select_cell {
+    background-color: rgb(233, 157, 233);
+}
+
+.adj_curr_select_cell {
+    background-color: tomato;
+}
+
+
+th, td {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+}

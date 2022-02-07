@@ -1,8 +1,5 @@
 const table = document.getElementById("mytable");
 var table_array = [];
-var row, col;
-var cnt = 0;
-
 
 function fillvalueupdown(row, col) {
   function Calculate(R, C) {
@@ -67,13 +64,10 @@ function fillrandom(row, col) {
 }
 
 function createtable(row, col) {
-  table_array = new Array(row);
   for (let i = 0; i < row; i++) {
-    table_array[i] = new Array(col);
     var table_row = table.insertRow(i);
     for (let j = 0; j < col; j++) {
       var table_col = table_row.insertCell(j);
-      table_col.classList.add("block");
     }
   }
 }
@@ -92,7 +86,7 @@ function fillcellcolor(row, col) {
       var table_col = table_row.cells[j];
       if (table_col.innerHTML == row * col) {
         table_col.innerHTML = "";
-        table_col.classList.add("color_block");
+        table_col.classList.add("color_draggable");
       }
     }
   }
@@ -102,7 +96,7 @@ function findingcolorindex(row, col) {
   var idx = [];
   for (let i = 0; i < row; i++) {
     for (let j = 0; j < col; j++) {
-      if (table_array[i][j] == row * col) {
+      if (table_array[i][j]==row*col) {
         idx = [i, j];
         return idx;
       }
@@ -117,47 +111,14 @@ function isSafe(currX, currY, row, col) {
   return false;
 }
 
-
-// function availabledrag(row, col) {
-//   var idx = findingcolorindex(row, col); 
-//   var dragmove = availablesafe(idx,row, col);
-//   console.log(dragmove);
-//   console.log(idx);
-//   for (let i = 0; i < row; i++) {
-//     for (let j = 0; j < col; j++) {
-//       if (table.rows[i].cells[j].classList.contains("draggable")) {
-//         table.rows[i].cells[j].classList.remove("draggable");
-//       }
-//     }
-//   }
-//   if (idx.length == 2) {
-//     table.rows[idx[0]].cells[idx[1]].setAttribute("draggable", true);
-//     table.rows[idx[0]].cells[idx[1]].classList.add("draggable");
-//     for (crd of dragmove) {
-//       table.rows[crd[0]].cells[crd[1]].classList.add("draggable");
-//     }
-//   }
-// }
-
-function currblock(classname){
-  var idx = [];
-  for (let i = 0; i < row; i++) {
-    for (let j = 0; j < col; j++) {
-      if (table.rows[i].cells[j].classList.contains(classname)) {
-        idx = [i, j];
-        return idx;
-      }
-    }
-  }
-}
-
-function availablesafe(idx) {
+function availablesafe(row, col) {
   const dxy = [
     [-1, 0],
     [0, -1],
     [1, 0],
     [0, 1],
   ];
+  var idx = findingcolorindex(row, col);
   var canmove = [];
   for (dir of dxy) {
     if (isSafe(idx[0] + dir[0], idx[1] + dir[1], row, col)) {
@@ -167,91 +128,74 @@ function availablesafe(idx) {
   return canmove;
 }
 
-function safe_adjacent(idx,color_block_idx) {
-  for(id of idx){
-    console.log("id: ",id);
-    if(id[0]!=color_block_idx[0] || id[1]!=color_block_idx[1]){
-      table.rows[id[0]].cells[id[1]].classList.add("adjacentcell");
+function availabledrag(row, col) {
+  var dragmove = availablesafe(row, col);
+  var idx = findingcolorindex(row, col);
+  console.log(dragmove);
+  console.log(idx);
+  for (let i = 0; i < row; i++) {
+    for (let j = 0; j < col; j++) {
+      if (table.rows[i].cells[j].classList.contains("draggable")) {
+        table.rows[i].cells[j].classList.remove("draggable");
+      }
+    }
+  }
+  if (idx.length == 2) {
+    table.rows[idx[0]].cells[idx[1]].setAttribute("draggable", true);
+    table.rows[idx[0]].cells[idx[1]].classList.add("draggable");
+    for (crd of dragmove) {
+      table.rows[crd[0]].cells[crd[1]].classList.add("draggable");
     }
   }
 }
 
-function remove_safe_adjacent(idx,color_block_idx){
-  for(id of idx){
-    console.log("id: ",id);
-    if(id[0]!=color_block_idx[0] || id[1]!=color_block_idx[1]){
-      table.rows[id[0]].cells[id[1]].classList.remove("adjacentcell");
-    }
-  }
-}
-
+var row,col;
+var cnt=0;
 function dragable() {
-    const blocks = document.querySelectorAll(".block:not(.color_block)");
-    var color_block_idx = currblock("color_block");
+  var val=-1;
+  // console.log("****************");
+  // console.log("In draggable");
+  availabledrag(row, col);
+  const draggables = document.querySelectorAll(".draggable:not(.color_draggable)");
+  const color_draggables = document.querySelector(".color_draggable");
+  console.log(draggables);
+  console.log(color_draggables);
+
+  color_draggables.addEventListener("dragstart", (e) => {
+    e.target.classList.remove("color_draggable");
+    e.stopImmediatePropagation()
+  });
+
+  color_draggables.addEventListener("dragend", (e) => {
+    console.log("Dragend");
+    e.target.removeAttribute("draggable");
+    e.target.innerHTML = val;
+    console.log("cnt: ",cnt);
+    cnt++;
+    e.stopImmediatePropagation();
+  });
+
+  for (dg of draggables) {
+    dg.addEventListener("dragover", (e) => {
+      e.preventDefault();
+    });
+
+    dg.addEventListener("dragenter", () => {});
+
+    dg.addEventListener("dragleave", () => {});
+
+    dg.addEventListener("drop", (e) => {
+      console.log("in drop");
+      e.target.classList.add("color_draggable");
+      val = e.target.innerHTML;
+      console.log("dest1: ", val);
+      e.target.innerHTML = "";
+      e.stopImmediatePropagation()
+    });
+
+  }
  
-    // console.log(color_block_idx);
-    for(block of blocks){
-      var curr_idx,safe_idx;
-      block.addEventListener("mouseenter",(e)=>{
-        e.target.classList.add("curr_block");
-        curr_idx = currblock("curr_block");
-        safe_idx = availablesafe(curr_idx);
-        safe_adjacent(safe_idx,color_block_idx);
-      })
 
-      block.addEventListener("mouseout",(e)=>{
-        e.target.classList.remove("curr_block");
-        remove_safe_adjacent(safe_idx,color_block_idx);
-      })
-    }
-    
-
-
-
-//   var val = -1;
-  
-  
-
-//   availabledrag(row, col);
-//   const draggables = document.querySelectorAll(
-//     ".draggable:not(.color_draggable)"
-//   );
-//   const color_draggables = document.querySelector(".color_draggable");
-//   console.log(draggables);
-//   console.log(color_draggables);
-
-//   color_draggables.addEventListener("dragstart", (e) => {
-//     e.target.classList.remove("color_draggable");
-//     e.stopImmediatePropagation();
-//   });
-
-//   color_draggables.addEventListener("dragend", (e) => {
-//     console.log("Dragend");
-//     e.target.removeAttribute("draggable");
-//     e.target.innerHTML = val;
-//     console.log("cnt: ", cnt);
-//     cnt++;
-//     e.stopImmediatePropagation();
-//   });
-
-//   for (dg of draggables) {
-//     dg.addEventListener("dragover", (e) => {
-//       e.preventDefault();
-//     });
-
-//     dg.addEventListener("dragenter", () => {});
-
-//     dg.addEventListener("dragleave", () => {});
-
-//     dg.addEventListener("drop", (e) => {
-//       console.log("in drop");
-//       e.target.classList.add("color_draggable");
-//       val = e.target.innerHTML;
-//       console.log("dest1: ", val);
-//       e.target.innerHTML = "";
-//       e.stopImmediatePropagation();
-//     });
-//   }
 }
 
 function submitform() {
@@ -262,6 +206,10 @@ function submitform() {
   col = document.getElementById("col").value;
 
   if (row >= 1 && row <= 100 && col >= 1 && col <= 100) {
+    table_array = new Array(row);
+    for (let i = 0; i < row; i++) {
+      table_array[i] = new Array(col);
+    }
     if (typeof table.rows[0] !== "undefined") {
       deletetable();
     }
@@ -285,6 +233,7 @@ function submitform() {
     alert("Please enter the row or column within the range between 1 and 100 ");
     return;
   }
-  dragable();
+  document.getElementById("dragbtn").disabled = false;
   document.getElementById("detail_form").reset();
+
 }
