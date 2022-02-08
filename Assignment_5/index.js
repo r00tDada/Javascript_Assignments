@@ -50,7 +50,7 @@ function get_adjacent_Cell_Around_Selected(row,col){
   ];
   let canmove = [];
   for (dir of dxy) {
-    if (isSafe(row + dir[0], col + dir[1], row, col)) {
+    if (isSafe(row + dir[0], col + dir[1])) {
       canmove.push([row+ dir[0], col + dir[1]]);
     }
   }
@@ -84,7 +84,7 @@ function isAdjacentCell(row,col,swap_idx){
     [0, 1],
   ];
   for (dir of dxy) {
-    if (isSafe(row + dir[0], col + dir[1], ROW, COL) && (swap_idx[0]==row + dir[0]) && (swap_idx[1]==col+dir[1])) {
+    if (isSafe(row + dir[0], col + dir[1]) && (swap_idx[0]==row + dir[0]) && (swap_idx[1]==col+dir[1])) {
       return true;
     }
   }
@@ -200,16 +200,6 @@ function get_Colored_given_value(val){
   }
 }
 
-function submitform(){
-  takingInput();
-  if(!checkingInputWithInRange(20,20)){
-    alert("Please enter the row or column within the range 1 to 20");
-    reset_Form();
-    return;
-  }
-  create_2d_array();
-  all_btn_toggle(false);
-}
 
 function swapping_two_blocks(curr_X,curr_Y,dest_X,dest_Y){
   table_arr[curr_X][curr_Y] =table_arr[dest_X][dest_Y];
@@ -249,10 +239,28 @@ function draggable(row,col){
 }
 
 function todo(){
-  // console.log(table_arr);
+  // Clear the content 
   clear_Table();
+  // Create the table
   create_Table();
+  // fill the table with 2D table array
   fill_Table();
+  // Colored the max cell with green
   get_Colored_given_value(ROW*COL);
 }
 
+// This is called when click on submit button.
+function submitform(){
+  // Taking row and col as input.
+  takingInput();
+  // Checking Input within the range.
+  if(!checkingInputWithInRange(20,20)){
+    alert("Please enter the row or column within the range 1 to 20");
+    reset_Form();
+    return;
+  }
+  // Creating 2D array of the table
+  create_2d_array();
+  // Toggle the btn so that they are visible
+  all_btn_toggle(false);
+}
