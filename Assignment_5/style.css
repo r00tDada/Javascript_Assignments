@@ -6,7 +6,8 @@ label{
 
 .rounded-input {
     padding:5px;
-    border-radius:5px;
+    border: solid 5px;
+    border-color: rgb(252, 185, 248);
 }
 
 .color_block {
@@ -39,9 +40,15 @@ label{
     cursor: not-allowed;
 }
 
+table{
+      border-collapse:collapse;
+}
+
 th, td {
     padding-top: 20px;
     padding-bottom: 20px;
     padding-left: 20px;
     padding-right: 20px;
+    border:solid;
+
 }
