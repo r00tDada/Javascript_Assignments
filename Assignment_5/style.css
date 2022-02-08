@@ -1,20 +1,47 @@
+
+label{
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.rounded-input {
+    padding:5px;
+    border-radius:5px;
+}
+
 .color_block {
     background-color: rgb(149, 226, 7);
 }
 
-
 .curr_select_cell {
-    background-color: rgb(233, 157, 233);
+    background-color: rgba(185, 89, 185, 0.932);
 }
 
 .adj_curr_select_cell {
     background-color: tomato;
 }
 
+.button {
+    background-color: #f32c2c; 
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+  
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 th, td {
-    padding-top: 30px;
-    padding-bottom: 30px;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
 }

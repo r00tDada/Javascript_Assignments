@@ -1,9 +1,10 @@
+
 var ROW,COL,table_arr;
 const table = document.getElementById("mytable");
 const btn_list = ["toggle_UD","toggle_LR","shuffle","clearbtn"];
 var click_flg = -1,swap_idx;
 
-function checkingInput(maxRow,maxCol){
+function checkingInputWithInRange(maxRow,maxCol){
   if(ROW>=0 && ROW<=maxRow && COL>=0 && COL<=maxCol){
     return true;
   }
@@ -28,7 +29,7 @@ function create_Table() {
   }
 }
 
-function hasblankblock(X,Y,val){
+function HasBlankedBlock(X,Y,val){
   if(table_arr[X][Y]==val){
     return true;
   }
@@ -42,7 +43,7 @@ function isSafe(X,Y){
   return false;
 }
 
-function get_adjacent_cell(row,col){
+function get_adjacent_Cell_Around_Selected(row,col){
   const dxy = [
     [-1, 0],
     [0, -1],
@@ -68,7 +69,7 @@ function get_coordinate_by_value(val){
   }
 }
 
-function color_click_cell(adjacentcell,curr_colored_idx,curr_x,curr_y){
+function coloration_of_Click_Cell(adjacentcell,curr_colored_idx,curr_x,curr_y){
   for(idx of adjacentcell){
     if(idx[0]!=curr_colored_idx[0] || idx[1]!=curr_colored_idx[1]){
       table.rows[idx[0]].cells[idx[1]].classList.add("adj_curr_select_cell");
@@ -77,7 +78,7 @@ function color_click_cell(adjacentcell,curr_colored_idx,curr_x,curr_y){
   table.rows[curr_x].cells[curr_y].classList.add("curr_select_cell");
 }
 
-function Isadjacentcell(row,col,swap_idx){
+function isAdjacentCell(row,col,swap_idx){
   const dxy = [
     [-1, 0],
     [0, -1],
@@ -92,43 +93,7 @@ function Isadjacentcell(row,col,swap_idx){
   return false;
 }
 
-function draggable(row,col){
-  //  1. check whether the click is on colored or not.
-  if(click_flg==-1){
-    if(hasblankblock(row,col,ROW*COL)){
-      alert("Colored block is click Pls click valid block")
-      return;
-    }
-    var curr_colored_idx = get_coordinate_by_value(ROW*COL);
-    var adjacentcell = get_adjacent_cell(row,col);
-    color_click_cell(adjacentcell,curr_colored_idx,row,col);
-    swap_idx=[row,col];
-    click_flg=0;
-  }
-  else if(click_flg==0){
-    if(!hasblankblock(row,col,ROW*COL)){
-      click_flg = -1;
-      alert("Selected box is not blank");
-      todo();
-      return;
-    }
-    if(Isadjacentcell(row,col,swap_idx)){
-      table_arr[row][col] =table_arr[swap_idx[0]][swap_idx[1]];
-      table_arr[swap_idx[0]][swap_idx[1]]= ROW*COL;
-      console.log(table_arr);
-      click_flg = -1;
-      todo();
-    }
-    else{
-      click_flg = -1;
-      alert("Selected box is not adjacent to color box");
-      todo();
-      return;
-    }
-  }
 
-
-}
 
 function toggle_Up_Down() {
   function Calculate(R, C) {
@@ -189,7 +154,7 @@ function fill_Table(){
   }
 }
 
-function cleartable(){
+function clear_Table(){
   for (let i = table.rows.length - 1; i >= 0; i--) {
       table.deleteRow(i);
   }
@@ -199,32 +164,31 @@ function all_btn_toggle(toggle_state){
   for(btn of btn_list){
     document.getElementById(btn).disabled = toggle_state;
   }
+  if(toggle_state){
+    for(btn of btn_list){
+      document.getElementById(btn).classList.add("disabled");
+    }
+  }
+  else{
+    for(btn of btn_list){
+      document.getElementById(btn).classList.remove("disabled");
+    }
+  }
 }
 
 function clear_content(){
-  cleartable();
+  clear_Table();
   all_btn_toggle(true);
   document.getElementById("detail_form").reset();
 
 }
-
 
 function takingInput(){
   ROW = document.getElementById("nrow").value;
   COL = document.getElementById("ncol").value;
 }
 
-function submitform(){
-  takingInput();
-  if(!checkingInput(20,20)){
-    alert("Please enter the row or column within the range 1 to 20");
-    return;
-  }
-  create_2d_array();
-  all_btn_toggle(false);
-}
-
-function get_colored_given_value(val){
+function get_Colored_given_value(val){
   for(let i=0;i<ROW;i++){
     var table_row = table.rows[i];
     for(let j=0;j<COL;j++){
@@ -237,11 +201,58 @@ function get_colored_given_value(val){
   }
 }
 
+function submitform(){
+  takingInput();
+  if(!checkingInputWithInRange(20,20)){
+    alert("Please enter the row or column within the range 1 to 20");
+    return;
+  }
+  create_2d_array();
+  all_btn_toggle(false);
+}
+
+function draggable(row,col){
+  //  1. check whether the click is on colored or not.
+  if(click_flg==-1){
+    if(HasBlankedBlock(row,col,ROW*COL)){
+      alert("Colored block is click Pls click valid block")
+      return;
+    }
+    var curr_colored_idx = get_coordinate_by_value(ROW*COL);
+    var adjacentcell = get_adjacent_Cell_Around_Selected(row,col);
+    coloration_of_Click_Cell(adjacentcell,curr_colored_idx,row,col);
+    swap_idx=[row,col];
+    click_flg=0;
+  }
+  else if(click_flg==0){
+    if(!HasBlankedBlock(row,col,ROW*COL)){
+      click_flg = -1;
+      alert("Selected box is not blank");
+      todo();
+      return;
+    }
+    if(isAdjacentCell(row,col,swap_idx)){
+      table_arr[row][col] =table_arr[swap_idx[0]][swap_idx[1]];
+      table_arr[swap_idx[0]][swap_idx[1]]= ROW*COL;
+      click_flg = -1;
+      todo();
+    }
+    else{
+      click_flg = -1;
+      alert("Selected box is not adjacent to color box");
+      todo();
+      return;
+    }
+  }
+
+
+}
+
 function todo(){
   // console.log(table_arr);
-  cleartable();
+  clear_Table();
   create_Table();
   fill_Table();
-  get_colored_given_value(ROW*COL);
+  get_Colored_given_value(ROW*COL);
 }
 
