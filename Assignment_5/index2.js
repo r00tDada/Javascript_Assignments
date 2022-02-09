@@ -15,8 +15,6 @@ class MyTable{
     print_row_col(){
         console.log(this.row + " " + this.col);
     }
-
-
     // create table
     create_Table() {
         for (let i = 0; i < this.row; i++) {
@@ -34,7 +32,6 @@ class MyTable{
             this.table_array[i] = new Array(this.col);
         }
     }
-
 
     // fill or clear table
     fill_Table(){
@@ -220,7 +217,7 @@ class MyTable{
           click_flg=1;
         }
     }
-    
+
 }
 
 function checkingInputWithInRange(maxRow,maxCol){
@@ -256,16 +253,6 @@ function clear_content(){
   reset_Form();
 }
 
-function submitform(){
-  takingInput();
-  if(!checkingInputWithInRange(20,20)){
-    alert("Please enter the row or column within the range 1 to 20");
-    reset_Form();
-    return;
-  }
-  mytable.create_2d_array();
-  all_btn_toggle(false);
-}
 
 function todo(){
   // console.log(table_arr);
@@ -279,5 +266,17 @@ function takingInput(){
     ROW = document.getElementById("nrow").value;
     COL = document.getElementById("ncol").value;
     mytable = new MyTable(ROW,COL,table_arr);
-    // mytable.print_row_col();
 }
+
+// 1. Submit Form is clicked
+function submitform(){
+    takingInput();
+    if(!checkingInputWithInRange(20,20)){
+      alert("Please enter the row or column within the range 1 to 20");
+      reset_Form();
+      return;
+    }
+    mytable.create_2d_array();
+    all_btn_toggle(false);
+}
+  
