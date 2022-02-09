@@ -1,10 +1,13 @@
 const table = document.getElementById("mytable");
 const btn_list = ["toggle_UD","toggle_LR","shuffle","clearbtn"];
 let ROW,COL,table_arr;
-let click_flg = 1,swap_idx;
+let click_flg,swap_idx;
 let mytable;
 
 class MyTable{
+    // Private variable
+    #click_flg=1;
+    #swap_idx=[];
 
     constructor(row,col,table_array){
         this.row = row;
@@ -12,9 +15,29 @@ class MyTable{
         this.table_array = table_array;
     }
 
+    // getter and setter
+    getclick_flg(){
+        return this.#click_flg;
+    }
+
+    setclick_flg(value){
+        value==1?value=0:value=1;
+        this.#click_flg=value;
+    }
+
+    getswap_idx(){
+        return this.#swap_idx;
+    }
+
+    setswap_idx(value){
+        this.#swap_idx=value;
+    }
+    
+    // Printing
     print_row_col(){
         console.log(this.row + " " + this.col);
     }
+
     // create table
     create_Table() {
         for (let i = 0; i < this.row; i++) {
@@ -78,7 +101,6 @@ class MyTable{
         return false;
     }
 
-
     // utilities
     get_adjacent_Cell_Around_Selected(row,col){
         const dxy = [
@@ -119,18 +141,32 @@ class MyTable{
         }
     }
 
-    coloration_of_Click_Cell(adjacentcell,curr_colored_idx,curr_x,curr_y){
+    coloration_or_decoloration_of_Click_Cell(adjacentcell,curr_colored_idx,curr_x,curr_y,flg){
         for(let i=0;i<adjacentcell.length;i++){
           if(adjacentcell[i][0]!=curr_colored_idx[0] || adjacentcell[i][1]!=curr_colored_idx[1]){
-            table.rows[adjacentcell[i][0]].cells[adjacentcell[i][1]].classList.add("adj_curr_select_cell");
+            if(flg==1){
+                table.rows[adjacentcell[i][0]].cells[adjacentcell[i][1]].classList.add("adj_curr_select_cell");
+            }
+            else{
+                table.rows[adjacentcell[i][0]].cells[adjacentcell[i][1]].classList.remove("adj_curr_select_cell");
+            }
           }
         }
-        table.rows[curr_x].cells[curr_y].classList.add("curr_select_cell");
+        if(flg==1){
+            table.rows[curr_x].cells[curr_y].classList.add("curr_select_cell");
+        }
+        else{
+            table.rows[curr_x].cells[curr_y].classList.remove("curr_select_cell");
+        }
     }
 
-    swapping_two_blocks(curr_X,curr_Y,dest_X,dest_Y){
-        this.table_array[curr_X][curr_Y] =this.table_array[dest_X][dest_Y];
-        this.table_array[dest_X][dest_Y]= this.row*this.col;
+    swapping_two_blocks(curr_X,curr_Y,dest){
+        this.table_array[curr_X][curr_Y] =this.table_array[dest[0]][dest[1]];
+        this.table_array[dest[0]][dest[1]]= this.row*this.col;
+        table.rows[curr_X].cells[curr_Y].innerHTML = table.rows[dest[0]].cells[dest[1]].innerHTML;
+        table.rows[dest[0]].cells[dest[1]].innerHTML= "";
+        table.rows[dest[0]].cells[dest[1]].classList.add("color_block");
+        table.rows[curr_X].cells[curr_Y].classList.remove("color_block");
     }
 
     // table creation
@@ -188,33 +224,32 @@ class MyTable{
     // main draggable
     draggable(row,col){
         //  1. check whether the click is on colored or not.
-        if(click_flg==1){
-            // console.log(this);
-            // console.log(this.row+" "+this.col);
+        let curr_colored_idx = this.get_coordinate_by_value(this.row*this.col);
+        if(this.getclick_flg()==1){
           if(this.has_Blanked_Block(row,col,this.row*this.col)){
             alert("Colored block is click Pls click valid block")
             return;
           }
-          let curr_colored_idx = this.get_coordinate_by_value(this.row*this.col);
           let adjacentcell = this.get_adjacent_Cell_Around_Selected(row,col);
-          this.coloration_of_Click_Cell(adjacentcell,curr_colored_idx,row,col);
-          swap_idx = [row,col];
-          click_flg=0;
+          this.coloration_or_decoloration_of_Click_Cell(adjacentcell,curr_colored_idx,row,col,1);
+          this.setswap_idx([row,col]);
+          this.setclick_flg(1);
         }
-        else if(click_flg==0){
+        else {
           if(!this.has_Blanked_Block(row,col,this.row*this.col)){
             alert("Selected box is not blank");
           }
           else {
-            if(this.isAdjacentCell(row,col,swap_idx)){
-                this.swapping_two_blocks(row,col,swap_idx[0],swap_idx[1]);
+            if(this.isAdjacentCell(row,col,this.getswap_idx())){
+                this.swapping_two_blocks(row,col,this.getswap_idx());
             }
             else{
               alert("Selected box is not adjacent to color box");
             }
           }
-          todo();
-          click_flg=1;
+          let adjacentcell = this.get_adjacent_Cell_Around_Selected(this.getswap_idx()[0],this.getswap_idx()[1]);
+          this.coloration_or_decoloration_of_Click_Cell(adjacentcell,curr_colored_idx,this.getswap_idx()[0],this.getswap_idx()[1],0);
+          this.setclick_flg(0);
         }
     }
 
@@ -253,7 +288,6 @@ function clear_content(){
   reset_Form();
 }
 
-
 function todo(){
   // console.log(table_arr);
   mytable.clear_Table();
@@ -268,8 +302,8 @@ function takingInput(){
     mytable = new MyTable(ROW,COL,table_arr);
 }
 
-// 1. Submit Form is clicked
 function submitform(){
+
     takingInput();
     if(!checkingInputWithInRange(20,20)){
       alert("Please enter the row or column within the range 1 to 20");
@@ -279,4 +313,3 @@ function submitform(){
     mytable.create_2d_array();
     all_btn_toggle(false);
 }
-  
