@@ -32,7 +32,7 @@ class MyTable{
     setswap_idx(value){
         this.#swap_idx=value;
     }
-    
+
     // Printing
     print_row_col(){
         console.log(this.row + " " + this.col);
@@ -140,7 +140,7 @@ class MyTable{
           }
         }
     }
-
+    // name change
     coloration_or_decoloration_of_Click_Cell(adjacentcell,curr_colored_idx,curr_x,curr_y,flg){
         for(let i=0;i<adjacentcell.length;i++){
           if(adjacentcell[i][0]!=curr_colored_idx[0] || adjacentcell[i][1]!=curr_colored_idx[1]){
@@ -160,49 +160,56 @@ class MyTable{
         }
     }
 
-    swapping_two_blocks(curr_X,curr_Y,dest){
-        this.table_array[curr_X][curr_Y] =this.table_array[dest[0]][dest[1]];
-        this.table_array[dest[0]][dest[1]]= this.row*this.col;
-        table.rows[curr_X].cells[curr_Y].innerHTML = table.rows[dest[0]].cells[dest[1]].innerHTML;
-        table.rows[dest[0]].cells[dest[1]].innerHTML= "";
-        table.rows[dest[0]].cells[dest[1]].classList.add("color_block");
+    swapping_two_blocks(curr_X,curr_Y,destination){
+        this.table_array[curr_X][curr_Y] =this.table_array[destination[0]][destination[1]];
+        this.table_array[destination[0]][destination[1]]= this.row*this.col;
+        table.rows[curr_X].cells[curr_Y].innerHTML = table.rows[destination[0]].cells[destination[1]].innerHTML;
+        table.rows[destination[0]].cells[destination[1]].innerHTML= "";
+        table.rows[destination[0]].cells[destination[1]].classList.add("color_block");
         table.rows[curr_X].cells[curr_Y].classList.remove("color_block");
     }
 
+    todo(){
+        // console.log(table_arr);
+        this.clear_Table();
+        this.create_Table();
+        this.fill_Table();
+        this.get_Colored_given_value(ROW*COL);
+    }
+    
     // table creation
+    toggle_UD_LR(r,c,type){
+      let cnt = 1;
+        for (let i = 0; i < c; i++) {
+          if(i%2==0){
+            for (let j = 0; j < r; j++){
+              if(type=="UD")
+                this.table_array[j][i] = cnt;
+              else
+                this.table_array[i][j] = cnt;
+              cnt++;
+            }
+          }
+          else{
+            for (let j = r-1; j >=0; j--){
+            if(type=="UD")
+              this.table_array[j][i] = cnt;
+            else
+              this.table_array[i][j] = cnt;
+              cnt++;
+            }
+          }
+        }
+    }
+
     toggle_Up_Down() {
-        function Calculate(row,R, C) {
-          return row * C + R - row;
-        }
-        for (let i = 1; i <= this.row; i++) {
-          for (let j = 1; j <= this.col; j += 2) {
-            this.table_array[i - 1][j - 1] = Calculate(this.row,i, j);
-          }
-        }
-        for (let i = 1; i <= this.row; i++) {
-          for (let j = 2; j <= this.col; j += 2) {
-            this.table_array[this.row - i][j - 1] = Calculate(this.row,i, j);
-          }
-        }
-        todo();
+        this.toggle_UD_LR(this.row,this.col,"UD");
+        this.todo();
     }
 
     toggle_Left_Right() {
-        function Calculate(col,R, C) {
-          return col * R + C - col;
-        }
-        for (let i = 1; i <= this.row; i++) {
-          if (i % 2 == 1) {
-            for (let j = 1; j <= this.col; j++) {
-              this.table_array[i - 1][j - 1] = Calculate(this.col,i, j);
-            }
-          } else {
-            for (let j = 1; j <= this.col; j++) {
-              this.table_array[i - 1][this.col - j] = Calculate(this.col,i, j);
-            }
-          }
-        }
-        todo();
+      this.toggle_UD_LR(this.col,this.row,"LR");
+      this.todo();
     }
 
     shuffle() {
@@ -218,7 +225,7 @@ class MyTable{
             this.table_array[i - 1][j - 1] = val;
           }
         }
-        todo();
+        this.todo();
     }
 
     // main draggable
@@ -286,14 +293,6 @@ function clear_content(){
   mytable.clear_Table();
   all_btn_toggle(true);
   reset_Form();
-}
-
-function todo(){
-  // console.log(table_arr);
-  mytable.clear_Table();
-  mytable.create_Table();
-  mytable.fill_Table();
-  mytable.get_Colored_given_value(ROW*COL);
 }
 
 function takingInput(){

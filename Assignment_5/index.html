@@ -18,11 +18,14 @@
         <label>Number of cols </label>
         <input type="number" id="ncol" class="rounded-input"><br><br>
     </form>
-    <button type="submit" class="button" onclick="submitform()">Submit</button>
-    <button disabled type="submit" id="toggle_UD" class="button disabled" onclick="mytable.toggle_Up_Down()">Toggle_Up_Down</button>
-    <button disabled type="submit" id="toggle_LR" class="button disabled" onclick="mytable.toggle_Left_Right()">Toggle_Left_Right</button>
-    <button disabled type="submit" id="shuffle" class="button disabled" onclick="mytable.shuffle()">Shuffle</button>
-    <button disabled type="submit" id="clearbtn" class="button disabled" onclick="clear_content()">Clear Table</button><br><br>
+
+    <button type="submit" class="button button1" onclick="submitform()">Submit</button><br>
+    <div class="container">
+        <button disabled type="submit" id="toggle_UD" class="button disabled" onclick="mytable.toggle_Up_Down()">Toggle_Up_Down</button>
+        <button disabled type="submit" id="toggle_LR" class="button disabled" onclick="mytable.toggle_Left_Right()">Toggle_Left_Right</button>
+        <button disabled type="submit" id="shuffle" class="button disabled" onclick="mytable.shuffle()">Shuffle</button>
+        <button disabled type="submit" id="clearbtn" class="button disabled" onclick="clear_content()">Clear Table</button><br><br>
+    </div>
     <table id="mytable" border="1px"></table>
     <!-- Javascript Libraries -->
     <script src="index2.js" async defer></script>

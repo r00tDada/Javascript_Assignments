@@ -1,7 +1,29 @@
+#detail_form{
+    text-align: center;  
+}
 
 label{
-    padding-right: 10px;
-    padding-left: 10px;
+    display: inline-block;
+    width: 130px;
+    text-align: left;
+}
+
+h1{
+    text-align: center;
+}
+
+input[type="number"]{
+    width: 200px;
+}
+
+.button1{
+    text-align: center;
+    width: 150px;
+    margin: 20px 800px 20px;
+}
+
+.container{
+    margin-left:630px
 }
 
 .rounded-input {
@@ -22,6 +44,10 @@ label{
     background-color: tomato;
 }
 
+#mytable{
+    margin: 0 auto;
+}
+
 .button {
     background-color: #f32c2c; 
     border: none;
@@ -31,10 +57,9 @@ label{
     text-decoration: none;
     display: inline-block;
     font-size: 12px;
-    margin: 4px 2px;
     cursor: pointer;
 }
-  
+
 .disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -49,6 +74,6 @@ th, td {
     padding-bottom: 20px;
     padding-left: 20px;
     padding-right: 20px;
-    border:solid;
+    border:solid 2px;
     cursor: pointer;
 }
