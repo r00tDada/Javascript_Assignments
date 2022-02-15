@@ -1,60 +1,59 @@
+// Ques 1 : Execute Promises sequentially without using promise.all
+const promise_random_array = Array.from({ length: 10 }, () =>
+  Math.floor(Math.random() * 10)
+);
+console.log(promise_random_array);
 
-var start,end;
-let promise = new Promise(function(resolve, reject) { 
-    start = new Date().getTime();
-    setTimeout(() => resolve(), 1000);
-}).then(function() {
-    console.log("Promise 1")
-    return new Promise(function (resolve, reject){
-        setTimeout(() => resolve(), 3000);
-    });
-}).then(function() {
-    console.log("Promise 2")
-    return new Promise(function (resolve, reject){
-        setTimeout(() => resolve(), 2000);
-    });
-}).then(function() {
-    console.log("Promise 3")
-    return new Promise(function (resolve, reject){
-        setTimeout(() => resolve(), 5000);
-    });
-}).then(function() {
-    console.log("Promise 4")
-    return new Promise(function (resolve, reject){
-        setTimeout(() => resolve(), 6000);
-    });
-}).then(function() {
-    console.log("Promise 5")
-    return new Promise(function (resolve, reject){
-        setTimeout(() => resolve(), 2000);
-    });
-}).then(function() {
-    console.log("Promise 6")
-    return new Promise(function (resolve, reject){
-        setTimeout(() => resolve(), 1000);
-    });
-}).then(function() {
-    console.log("Promise 7")
-    return new Promise(function (resolve, reject){
-        setTimeout(() => resolve(), 3000);
-    });
-}).then(function() {
-    console.log("Promise 8")
-    return new Promise(function (resolve, reject){
-        setTimeout(() => resolve(), 4000);
-    });
-}).then(function() {
-    console.log("Promise 9")
-    return new Promise(function (resolve, reject){
-        setTimeout(() => resolve(), 2000);
-    });
-}).then(function() {
-    console.log("Promise 10")
-    return new Promise(function (resolve, reject){
-        setTimeout(() => resolve(), 0);
-    });
-}).then(()=>{
-    end = new Date().getTime();
-    console.log("Execution time",end_all-start_all);
-});
+async function sequentially(promise_random_array) {
+  for (let i in promise_random_array) {
+    let response = await promise(i);
+    console.log(response);
+  }
+}
 
+sequentially(promise_random_array);
+
+function promise(idx) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+        resolve("resolve " + Number(Number(idx) + 1));
+    }, promise_random_array[idx] * 1000);
+  });
+}
+
+// // Ques 2 : Execute Promises sequentially untill the rejected once
+
+const promise_random_array = Array.from({ length: 10 }, () =>
+  Math.floor(Math.random() * 10)
+);
+console.log(promise_random_array);
+
+async function sequentially(promise_random_array) {
+  for (let i in promise_random_array) {
+    try {
+      let response = await promise(i);
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+  }
+}
+
+sequentially(promise_random_array);
+
+function promise(idx) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(() => {
+      let error = false;
+      if (idx == 2) {
+        error = true;
+      }
+      if (!error) {
+        resolve("resolve " + Number(Number(idx) + 1));
+      } else {
+        reject("reject at " + Number(Number(idx) + 1));
+      }
+    }, promise_random_array[idx] * 1000);
+  });
+}
