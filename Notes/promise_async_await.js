@@ -15,13 +15,13 @@ async function sequentially() {
 console.log(promise_random_array);
 
   console.log('Before For Each Loop')
-  promise_random_array.forEach(async (element,index) => {
-    let response =  await getPromise(element);
-    console.log(response);
-  });
+  // promise_random_array.forEach(async (element,index) => {
+  //   let response =  await getPromise(element);
+  //   console.log(response);
+  // });
   
-  // for (let i = 0; i < promise_random_array.length; i++) {
-  //   const result = await getPromise(promise_random_array[i]);
+  // for (let i of promise_random_array) {
+  //   const result = await getPromise(i);
   //   console.log(result);
   // }
   console.log('After For Each Loop')
